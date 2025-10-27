@@ -1,9 +1,14 @@
 [project]
 name = "social-graph-py"
 version = "0.1.0"
-description = ""
+description = "Cloud-hosted social graph backend built in Python using Neo4j Aura Free."
 readme = "README.md"
 requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+    { name = "Venkat Gorla", email = "email@example.com" }
+]
+
 dependencies = [
     "neo4j>=6.0.2",
     "python-dotenv>=1.2.1",
@@ -15,3 +20,17 @@ dependencies = [
 dev = [
     "pytest>=8.4.2",
 ]
+
+# --- pytest configuration ---
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+# --- build configuration ---
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# --- hatch build target configuration ---
+[tool.hatch.build.targets.wheel]
+packages = ["src/social_graph"]
