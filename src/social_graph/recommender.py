@@ -39,9 +39,19 @@ class Recommender:
 
     async def mutual_friend_count(self, user_a: str, user_b: str) -> int:
         """
-        Count the number of mutual friends shared by two users.
+        Count mutual friends between two users (server-side aggregation).
+        Returns an integer count.
         """
-        raise NotImplementedError
+        query = """
+        MATCH (a:User {username: $user_a})-[:FRIEND_WITH]-(f:User)-[:FRIEND_WITH]-(b:User {username: $user_b})
+        WHERE a <> b
+        RETURN count(DISTINCT f) AS mutual_count
+        """
+        params = {"user_a": user_a, "user_b": user_b}
+        result = await self.driver.run_query(query, params)
+        if not result:
+            return 0
+        return result[0].get("mutual_count", 0)
 
     async def list_mutual_friends(self, user_a: str, user_b: str) -> List[str]:
         """
