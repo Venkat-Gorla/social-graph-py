@@ -14,13 +14,14 @@ from social_graph.service_async import (
     add_friendship,
     list_friends,
 )
+from social_graph.test_utils import clear_graph
 
 @pytest.mark.asyncio
 async def test_basic_graph_flow_async():
     """Async integration test for the social graph service."""
     # Clear all data before running async test
     async_driver = get_driver()
-    await async_driver.run_query("MATCH (n) DETACH DELETE n")
+    await clear_graph(async_driver)
 
     # Create two users
     await add_user(User("alice"))
