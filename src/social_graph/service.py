@@ -5,6 +5,8 @@ from .db import get_driver
 from .models import User, Friendship
 
 # vegorla: consider how to unit test these functions using mock objects
+# should we have async versions of these functions?
+# what happens if the same user or friendship is created multiple times?
 def add_user(user: User) -> dict[str, Any]:
     """Create a user node if it doesn't exist."""
     query = """
