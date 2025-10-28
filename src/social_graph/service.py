@@ -4,8 +4,7 @@ from dataclasses import asdict
 from .db import get_driver
 from .models import User, Friendship
 
-# vegorla: should we have async versions of these functions?
-# what happens if the same user or friendship is created multiple times?
+# vegorla: what happens if the same user or friendship is created multiple times?
 def add_user(user: User, driver=None) -> list[dict[str, Any]]:
     """Create a user node if it doesn't exist."""
     query = """
