@@ -1,8 +1,10 @@
 """Business logic and Neo4j operations for the social graph."""
 from typing import Any
+from dataclasses import asdict
 from .db import get_driver
 from .models import User, Friendship
 
+# vegorla: consider how to unit test these functions using mock objects
 def add_user(user: User) -> dict[str, Any]:
     """Create a user node if it doesn't exist."""
     query = """
@@ -19,7 +21,7 @@ def add_friendship(friendship: Friendship) -> dict[str, Any]:
     MERGE (b)-[:FRIEND_WITH]->(a)
     RETURN a.username AS user1, b.username AS user2
     """
-    return _run_query(query, friendship.__dict__)
+    return _run_query(query, asdict(friendship))
 
 def list_friends(username: str) -> list[str]:
     """Return list of friends for given user."""
@@ -32,7 +34,9 @@ def list_friends(username: str) -> list[str]:
     return [r["friend"] for r in result]
 
 def _run_query(query: str, params: dict[str, Any]):
-    """Helper to execute Cypher query via the shared driver."""
+    """
+        Execute a Cypher query using the shared Neo4j driver. 
+        Always returns a list of result dicts.
+    """
     driver = get_driver()
-    result = driver.run_query(query, params)
-    return result[0] if len(result) == 1 else result
+    return driver.run_query(query, params)
