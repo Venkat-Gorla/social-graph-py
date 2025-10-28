@@ -2,7 +2,7 @@
 
 """
 To run this script using uv, from root folder:
-uv run python scripts\test_db_conn.py
+uv run python scripts/test_db_conn.py
 """
 
 from social_graph.db import Neo4jDriver
