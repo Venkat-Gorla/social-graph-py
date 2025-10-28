@@ -1,5 +1,11 @@
 """Quick connection test to Neo4j Aura Free."""
-from src.social_graph.db import Neo4jDriver
+
+"""
+To run this script using uv, from root folder:
+uv run python scripts\test_db_conn.py
+"""
+
+from social_graph.db import Neo4jDriver
 
 def main():
     db = Neo4jDriver()

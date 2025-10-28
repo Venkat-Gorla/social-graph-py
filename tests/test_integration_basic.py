@@ -1,7 +1,7 @@
 """Basic integration test for the social graph service."""
 
 """
-To run this test using uv from root folder:
+To run this test using uv, from root folder:
 uv run pytest -s tests/test_integration_basic.py
 (-s lets you see the print() output.)
 """
@@ -25,8 +25,7 @@ def test_basic_graph_flow():
     assert "alice" in bob_friends
     print("Integration test passed: Alice <-> Bob friendship created successfully.")
 
-# vegorla
-# check how this can be integrated into the test suite
+# vegorla check how this can be integrated into the test suite
 def clear_graph():
     from social_graph.db import get_driver
     drv = get_driver()
