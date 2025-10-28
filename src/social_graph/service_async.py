@@ -4,6 +4,7 @@ from dataclasses import asdict
 from .db_async import get_driver
 from .models import User, Friendship
 
+# vegorla unit tests using mocks for these functions
 async def add_user(user: User, driver=None) -> list[dict[str, Any]]:
     """Asynchronously create a user node if it doesn't exist."""
     query = """

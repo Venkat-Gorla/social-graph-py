@@ -10,7 +10,11 @@ import pytest
 from social_graph.models import User, Friendship
 from social_graph.service import add_user, add_friendship, list_friends
 from social_graph.db import get_driver
-from social_graph.service_async import add_user as add_user_async, add_friendship as add_friendship_async, list_friends as list_friends_async
+from social_graph.service_async import (
+    add_user as add_user_async,
+    add_friendship as add_friendship_async,
+    list_friends as list_friends_async,
+)
 from social_graph.db_async import close_driver as close_driver_async
 
 def clear_graph():
