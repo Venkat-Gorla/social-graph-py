@@ -57,7 +57,15 @@ class Recommender:
         """
         Return usernames of mutual friends between two users.
         """
-        raise NotImplementedError
+        query = """
+        MATCH (a:User {username: $user_a})-[:FRIEND_WITH]-(f:User)-[:FRIEND_WITH]-(b:User {username: $user_b})
+        WHERE a <> b
+        RETURN DISTINCT f.username AS mutual_friend
+        ORDER BY f.username
+        """
+        params = {"user_a": user_a, "user_b": user_b}
+        result = await self._run_query(query, params)
+        return [r["mutual_friend"] for r in result if "mutual_friend" in r]
 
     # -------------------------------
     # Recommendation Algorithms
