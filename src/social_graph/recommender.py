@@ -83,7 +83,20 @@ class Recommender:
             {"username": "carol", "mutual_count": 2},
         ]
         """
-        raise NotImplementedError
+        query = """
+        MATCH (u:User {username: $username})-[:FRIEND_WITH]-(f:User)-[:FRIEND_WITH]-(fof:User)
+        WHERE NOT (u)-[:FRIEND_WITH]-(fof) AND fof <> u
+        WITH DISTINCT fof, f
+        RETURN fof.username AS username, COUNT(DISTINCT f) AS mutual_count
+        ORDER BY mutual_count DESC, username
+        LIMIT $limit
+        """
+        params = {"username": username, "limit": limit}
+        result = await self._run_query(query, params)
+        return [
+            {"username": r["username"], "mutual_count": r["mutual_count"]}
+            for r in result if "username" in r
+        ]
 
     async def compute_score(
         self, user: str, candidate: str

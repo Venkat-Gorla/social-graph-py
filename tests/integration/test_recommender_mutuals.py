@@ -42,3 +42,31 @@ async def _create_graph_mutuals(users, friendships):
 
     for user_a, user_b in friendships:
         await add_friendship(Friendship(user_a, user_b))
+
+@pytest.mark.asyncio
+async def test_recommender_suggest_friends(setup_graph):
+    async_driver = setup_graph
+
+    # Graph structure:
+    # A---B---C
+    # A---D---F
+    # A---E---F
+
+    users = ["A", "B", "C", "D", "E", "F"]
+    friendships = [
+        ("A", "B"),
+        ("B", "C"),
+        ("A", "D"),
+        ("D", "F"),
+        ("A", "E"),
+        ("E", "F"),
+    ]
+    await _create_graph_mutuals(users, friendships)
+
+    recommender = Recommender(driver=async_driver)
+    suggestions = await recommender.suggest_friends_2nd_degree("A", limit=10)
+    expected_suggestions = [
+        {"username": "F", "mutual_count": 2},
+        {"username": "C", "mutual_count": 1},
+    ]
+    assert suggestions == expected_suggestions
