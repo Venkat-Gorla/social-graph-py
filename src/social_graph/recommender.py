@@ -10,6 +10,7 @@ All methods are asynchronous and integrate with the shared
 AsyncNeo4jDriver for non-blocking Neo4j operations.
 """
 
+import math
 from typing import Any, List, Dict, Optional
 from .db_async import get_driver, AsyncNeo4jDriver
 
@@ -102,10 +103,20 @@ class Recommender:
         self, user: str, candidate: str
     ) -> float:
         """
-        Compute recommendation score combining mutual count
-        and degree normalization penalty.
+        Compute recommendation score combining mutual friend count (positive factor)
+        and degree normalization penalty (negative factor).
+
+        Formula:
+            score = α * mutual_count - β * log(1 + degree(candidate))
         """
-        raise NotImplementedError
+        mutual_count = await self.mutual_friend_count(user, candidate)
+        degree = await self._get_degree(candidate)
+
+        # Defensive: avoid log(0)
+        degree_penalty = math.log1p(degree)
+
+        score = self.alpha * mutual_count - self.beta * degree_penalty
+        return round(score, 4)
 
     async def recommend_top_k(
         self, username: str, k: int = 10
@@ -130,7 +141,14 @@ class Recommender:
         Internal helper: return number of friends (degree) for a user.
         Used in score normalization.
         """
-        raise NotImplementedError
+        query = """
+        MATCH (u:User {username: $username})-[:FRIEND_WITH]-(f:User)
+        RETURN count(DISTINCT f) AS degree
+        """
+        result = await self._run_query(query, {"username": username})
+        if not result:
+            return 0
+        return result[0].get("degree", 0)
 
     async def _run_query(self, query: str, params: dict[str, Any]) -> list[dict]:
         """
