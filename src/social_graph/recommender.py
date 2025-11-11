@@ -145,6 +145,7 @@ class Recommender:
         for c in candidates:
             candidate_username = c["username"]
             mutuals = c["mutual_count"]
+            # vegorla: mutual count is recomputed inside compute_score, inefficient
             score = await self.compute_score(username, candidate_username)
             scored.append({
                 "username": candidate_username,
