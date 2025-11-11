@@ -140,14 +140,8 @@ class Recommender:
         if not candidates:
             return []
 
-        # Step 2: compute scores asynchronously for each candidate
-        scored = await self._get_candidates_scoring_data(username, candidates, k)
-
-        # vegorla: this is Not needed, consider function name change to match behavior
-        # Step 3: sort and return top-k
-        # Sort by score (descending), then username (ascending) for deterministic order
-        scored.sort(key=lambda r: (-r["score"], r["username"]))
-        return scored[:k]
+        # Step 2: get top-k without doing a full sort
+        return await self._get_top_k_candidates(username, candidates, k)
 
     # -------------------------------
     # Internal Helpers
@@ -167,9 +161,13 @@ class Recommender:
             return 0
         return result[0].get("degree", 0)
 
-    async def _get_candidates_scoring_data(
+    async def _get_top_k_candidates(
         self, username: str, candidates: List[Dict[str, Any]], k: int
     ) -> List[Dict[str, Any]]:
+        """
+        Internal helper to compute scores and return only the top-K candidates.
+        Uses a bounded heap for efficiency.
+        """
         scored_heap = []
 
         for c in candidates:
@@ -179,7 +177,7 @@ class Recommender:
             # vegorla: mutual count is recomputed inside compute_score, inefficient
             score = await self.compute_score(username, candidate_username)
 
-            # vegorla: unit and integration test to ensure heap logic is working
+            # vegorla: integration test to ensure heap logic is working
             item = (score, candidate_username, mutuals)
             if len(scored_heap) < k:
                 heapq.heappush(scored_heap, item)
