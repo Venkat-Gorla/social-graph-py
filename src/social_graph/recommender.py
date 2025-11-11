@@ -134,24 +134,15 @@ class Recommender:
             {"username": "carol", "score": 0.65, "mutuals": 2},
         ]
         """
+        # vegorla: integration test for this function
+
         # Step 1: discover 2nd-degree candidates
         candidates = await self.suggest_friends_2nd_degree(username, limit=k * 3)
         if not candidates:
             return []
 
         # Step 2: compute scores asynchronously for each candidate
-        # vegorla: make separate function
-        scored = []
-        for c in candidates:
-            candidate_username = c["username"]
-            mutuals = c["mutual_count"]
-            # vegorla: mutual count is recomputed inside compute_score, inefficient
-            score = await self.compute_score(username, candidate_username)
-            scored.append({
-                "username": candidate_username,
-                "score": score,
-                "mutuals": mutuals,
-            })
+        scored = await self._get_candidates_scoring_data(username, candidates)
 
         # Step 3: sort and return top-k
         # vegorla: understand this code
@@ -175,6 +166,23 @@ class Recommender:
         if not result:
             return 0
         return result[0].get("degree", 0)
+
+    async def _get_candidates_scoring_data(
+        self, username: str, candidates: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        scored = []
+        for c in candidates:
+            candidate_username = c["username"]
+            mutuals = c["mutual_count"]
+            # vegorla: mutual count is recomputed inside compute_score, inefficient
+            score = await self.compute_score(username, candidate_username)
+            scored.append({
+                "username": candidate_username,
+                "score": score,
+                "mutuals": mutuals,
+            })
+
+        return scored
 
     async def _run_query(self, query: str, params: dict[str, Any]) -> list[dict]:
         """
