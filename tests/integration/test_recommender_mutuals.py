@@ -16,7 +16,6 @@ async def setup_graph():
     yield driver
     await close_driver()
 
-# vegorla: can we have tests with a more complex graph aka real world?
 @pytest.mark.asyncio
 async def test_recommender_mutual_friends(setup_graph):
     async_driver = setup_graph

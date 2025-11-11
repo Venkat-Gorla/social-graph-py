@@ -177,7 +177,6 @@ class Recommender:
             # vegorla: mutual count is recomputed inside compute_score, inefficient
             score = await self.compute_score(username, candidate_username)
 
-            # vegorla: integration test to ensure heap logic is working
             item = (score, candidate_username, mutuals)
             if len(scored_heap) < k:
                 heapq.heappush(scored_heap, item)
