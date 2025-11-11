@@ -70,3 +70,44 @@ async def test_recommender_suggest_friends(setup_graph):
         {"username": "C", "mutual_count": 1},
     ]
     assert suggestions == expected_suggestions
+
+@pytest.mark.asyncio
+async def test_recommender_recommend_top_k(setup_graph):
+    async_driver = setup_graph
+
+    # Graph structure:
+    # A---B---C
+    # A---D---F
+    # A---E---F
+    #
+    # Expected second-degree candidates for A:
+    #   F (mutuals=2: D,E)
+    #   C (mutuals=1: B)
+    # F has higher degree penalty (2 friends: D,E)
+    # but more mutuals, so should still rank first.
+
+    users = ["A", "B", "C", "D", "E", "F"]
+    friendships = [
+        ("A", "B"),
+        ("B", "C"),
+        ("A", "D"),
+        ("D", "F"),
+        ("A", "E"),
+        ("E", "F"),
+    ]
+    await _create_graph_mutuals(users, friendships)
+
+    recommender = Recommender(driver=async_driver)
+
+    results = await recommender.recommend_top_k("A", k=5)
+
+    # We only expect F and C as candidates; F should rank higher than C
+    usernames = [r["username"] for r in results]
+    assert usernames == ["F", "C"], "Only F and C should be recommended"
+
+    # Basic sanity checks on score fields
+    for rec in results:
+        assert "score" in rec
+        assert "mutuals" in rec
+        assert isinstance(rec["score"], float)
+        assert rec["mutuals"] > 0
