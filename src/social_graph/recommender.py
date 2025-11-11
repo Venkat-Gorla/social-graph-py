@@ -123,14 +123,39 @@ class Recommender:
     ) -> List[Dict[str, Any]]:
         """
         Generate top-k ranked friend recommendations for a user.
-        
+
+        Uses:
+          - suggest_friends_2nd_degree() for candidate discovery
+          - compute_score() for ranking
+
         Returns a list of dicts with scoring metadata:
         [
             {"username": "bob", "score": 0.85, "mutuals": 3},
             {"username": "carol", "score": 0.65, "mutuals": 2},
         ]
         """
-        raise NotImplementedError
+        # Step 1: discover 2nd-degree candidates
+        candidates = await self.suggest_friends_2nd_degree(username, limit=k * 3)
+        if not candidates:
+            return []
+
+        # Step 2: compute scores asynchronously for each candidate
+        # vegorla: make separate function
+        scored = []
+        for c in candidates:
+            candidate_username = c["username"]
+            mutuals = c["mutual_count"]
+            score = await self.compute_score(username, candidate_username)
+            scored.append({
+                "username": candidate_username,
+                "score": score,
+                "mutuals": mutuals,
+            })
+
+        # Step 3: sort and return top-k
+        # vegorla: understand this code
+        scored.sort(key=lambda r: (-r["score"], r["username"]))
+        return scored[:k]
 
     # -------------------------------
     # Internal Helpers
