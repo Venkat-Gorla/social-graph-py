@@ -11,6 +11,7 @@ AsyncNeo4jDriver for non-blocking Neo4j operations.
 """
 
 import math
+import heapq
 from typing import Any, List, Dict, Optional
 from .db_async import get_driver, AsyncNeo4jDriver
 
@@ -140,8 +141,9 @@ class Recommender:
             return []
 
         # Step 2: compute scores asynchronously for each candidate
-        scored = await self._get_candidates_scoring_data(username, candidates)
+        scored = await self._get_candidates_scoring_data(username, candidates, k)
 
+        # vegorla: this is Not needed, consider function name change to match behavior
         # Step 3: sort and return top-k
         # Sort by score (descending), then username (ascending) for deterministic order
         scored.sort(key=lambda r: (-r["score"], r["username"]))
@@ -166,21 +168,30 @@ class Recommender:
         return result[0].get("degree", 0)
 
     async def _get_candidates_scoring_data(
-        self, username: str, candidates: List[Dict[str, Any]]
+        self, username: str, candidates: List[Dict[str, Any]], k: int
     ) -> List[Dict[str, Any]]:
-        scored = []
+        scored_heap = []
+
         for c in candidates:
             candidate_username = c["username"]
             mutuals = c["mutual_count"]
+
             # vegorla: mutual count is recomputed inside compute_score, inefficient
             score = await self.compute_score(username, candidate_username)
-            # vegorla: create heap with top K elements, avoid full sort and improve time complexity
-            # unit and integration test to ensure heap logic is working
-            scored.append({
-                "username": candidate_username,
-                "score": score,
-                "mutuals": mutuals,
-            })
+
+            # vegorla: unit and integration test to ensure heap logic is working
+            item = (score, candidate_username, mutuals)
+            if len(scored_heap) < k:
+                heapq.heappush(scored_heap, item)
+            else:
+                # Keep only top-K highest scoring entries
+                heapq.heappushpop(scored_heap, item)
+
+        # Convert heap into sorted descending list by score, ascending username
+        scored = [
+            {"username": uname, "score": sc, "mutuals": m}
+            for sc, uname, m in sorted(scored_heap, key=lambda x: (-x[0], x[1]))
+        ]
 
         return scored
 
