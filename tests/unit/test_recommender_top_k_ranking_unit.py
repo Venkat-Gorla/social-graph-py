@@ -17,7 +17,7 @@ async def test_recommend_top_k_ranking(mocker):
     )
 
     # Mock compute_score to assign custom scores
-    async def fake_score(user, candidate):
+    async def fake_score(user, candidate, mutuals):
         return {"bob": 0.9, "carol": 0.7, "dave": 0.4}[candidate]
 
     mocker.patch.object(rec, "compute_score", side_effect=fake_score)

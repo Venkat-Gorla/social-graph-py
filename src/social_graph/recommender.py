@@ -101,7 +101,7 @@ class Recommender:
         ]
 
     async def compute_score(
-        self, user: str, candidate: str
+        self, user: str, candidate: str, mutual_count: Optional[int] = None
     ) -> float:
         """
         Compute recommendation score combining mutual friend count (positive factor)
@@ -110,7 +110,8 @@ class Recommender:
         Formula:
             score = α * mutual_count - β * log(1 + degree(candidate))
         """
-        mutual_count = await self.mutual_friend_count(user, candidate)
+        if mutual_count is None:
+            mutual_count = await self.mutual_friend_count(user, candidate)
         degree = await self._get_degree(candidate)
 
         # Defensive: avoid log(0)
@@ -174,8 +175,7 @@ class Recommender:
             candidate_username = c["username"]
             mutuals = c["mutual_count"]
 
-            # vegorla: mutual count is recomputed inside compute_score, inefficient
-            score = await self.compute_score(username, candidate_username)
+            score = await self.compute_score(username, candidate_username, mutuals)
 
             item = (score, candidate_username, mutuals)
             if len(scored_heap) < k:

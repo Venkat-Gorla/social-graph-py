@@ -14,7 +14,7 @@ async def test_heap_keeps_top_k_only(mocker):
         "u4": 0.7,
         "u5": 0.5,
     }
-    mocker.patch.object(rec, "compute_score", side_effect=lambda u, cand: scores[cand])
+    mocker.patch.object(rec, "compute_score", side_effect=lambda u, cand, mutuals: scores[cand])
 
     candidates = [{"username": u, "mutual_count": 1} for u in scores.keys()]
     results = await rec._get_top_k_candidates("me", candidates, k=3)
@@ -52,7 +52,7 @@ async def test_heap_called_with_exact_k_ordered(mocker):
 
     # Map per candidate so order is explicit
     score_map = {"x": 0.2, "y": 0.1}
-    mocker.patch.object(rec, "compute_score", side_effect=lambda u, cand: score_map[cand])
+    mocker.patch.object(rec, "compute_score", side_effect=lambda u, cand, mutuals: score_map[cand])
 
     candidates = [
         {"username": "x", "mutual_count": 1},
