@@ -134,8 +134,6 @@ class Recommender:
             {"username": "carol", "score": 0.65, "mutuals": 2},
         ]
         """
-        # vegorla: integration test for this function
-
         # Step 1: discover 2nd-degree candidates
         candidates = await self.suggest_friends_2nd_degree(username, limit=k * 3)
         if not candidates:
@@ -145,7 +143,7 @@ class Recommender:
         scored = await self._get_candidates_scoring_data(username, candidates)
 
         # Step 3: sort and return top-k
-        # vegorla: understand this code
+        # Sort by score (descending), then username (ascending) for deterministic order
         scored.sort(key=lambda r: (-r["score"], r["username"]))
         return scored[:k]
 
@@ -176,6 +174,8 @@ class Recommender:
             mutuals = c["mutual_count"]
             # vegorla: mutual count is recomputed inside compute_score, inefficient
             score = await self.compute_score(username, candidate_username)
+            # vegorla: create heap with top K elements, avoid full sort and improve time complexity
+            # unit and integration test to ensure heap logic is working
             scored.append({
                 "username": candidate_username,
                 "score": score,

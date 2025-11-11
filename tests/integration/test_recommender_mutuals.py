@@ -111,3 +111,24 @@ async def test_recommender_recommend_top_k(setup_graph):
         assert "mutuals" in rec
         assert isinstance(rec["score"], float)
         assert rec["mutuals"] > 0
+
+@pytest.mark.asyncio
+async def test_recommender_recommend_top_k_no_candidates(setup_graph):
+    async_driver = setup_graph
+
+    # Graph structure:
+    # X---Y
+    # Z (isolated)
+    users = ["X", "Y", "Z"]
+    friendships = [("X", "Y")]
+    await _create_graph_mutuals(users, friendships)
+
+    recommender = Recommender(driver=async_driver)
+
+    # User Z has no friends at all -> should yield no 2nd-degree connections
+    results_z = await recommender.recommend_top_k("Z", k=5)
+    assert results_z == [], "Isolated user Z should have no recommendations"
+
+    # User X only has Y, who has no other connections -> also no recommendations
+    results_x = await recommender.recommend_top_k("X", k=5)
+    assert results_x == [], "User X should have no 2nd-degree candidates"
