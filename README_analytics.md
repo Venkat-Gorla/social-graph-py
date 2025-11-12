@@ -54,3 +54,17 @@ This MVP demonstrates:
 - Understanding of **graph metrics** (degree, influence, communities).
 - Ability to design **async data pipelines** with Neo4j.
 - Awareness of **trade-offs** between free-tier limitations and scalable analytics.
+
+## 🎓 What I Learned — Analytics Module
+
+Building this analytics component gave me hands-on experience with **practical graph analysis** in Neo4j using **pure Cypher**.
+
+Key takeaways:
+
+- **Graph Query Thinking:** Learned to design and query relationships directly, focusing on connections and influence, not just tabular data.
+- **Async Architecture:** Integrated Neo4j with asynchronous Python workflows, ensuring scalability and clean concurrency.
+- **Design Trade-offs:** Understood the balance between free-tier constraints (Aura Free) and advanced analytics (APOC / GDS).
+- **Progressive Enhancement Mindset:** Built a working MVP first, documented clear upgrade paths (e.g., real PageRank, Louvain).
+- **Software Craftsmanship:** Practiced maintainable modular code — clean, typed, and consistent with the rest of the project.
+
+This module represents a **bridge between theory and practice**: I implemented essential analytics features that _work today_, while designing an architecture that can scale into more sophisticated graph intelligence tomorrow.
