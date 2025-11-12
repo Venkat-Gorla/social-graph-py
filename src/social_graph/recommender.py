@@ -175,6 +175,8 @@ class Recommender:
             candidate_username = c["username"]
             mutuals = c["mutual_count"]
 
+            # future improvement: consider moving the await outside the for loop 
+            # to parallelize score computations
             score = await self.compute_score(username, candidate_username, mutuals)
 
             item = (score, candidate_username, mutuals)
