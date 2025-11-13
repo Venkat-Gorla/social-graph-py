@@ -1,5 +1,3 @@
-# vegorla: check if "distinct" is needed in the Cypher queries in this module
-
 """
 Asynchronous analytics module for Social Graph Resume Project (MVP).
 
@@ -44,7 +42,7 @@ async def degree(
     """
     query = """
     MATCH (u:User {username: $username})-[:FRIEND_WITH]-(f:User)
-    RETURN count(f) AS degree
+    RETURN count(DISTINCT f) AS degree
     """
     if driver is None:
         driver = get_driver()
@@ -66,8 +64,8 @@ async def pagerank(
         List of (username, pseudo_score) tuples.
     """
     query = """
-    MATCH (u:User)-[:FRIEND_WITH]-()
-    RETURN u.username AS username, count(*) AS degree
+    MATCH (u:User)-[:FRIEND_WITH]-(f:User)
+    RETURN u.username AS username, count(DISTINCT f) AS degree
     ORDER BY degree DESC
     LIMIT $top_n
     """
