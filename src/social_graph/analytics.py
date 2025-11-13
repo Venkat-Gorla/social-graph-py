@@ -13,11 +13,6 @@ Functions
 - pagerank(top_n): simulate user influence ranking by connection counts.
 - community_detection(): simple placeholder illustrating community concept.
 
-Integration
------------
-Uses the existing async driver abstraction (`get_driver`) from db_async.py.
-No direct driver/session management is reimplemented here.
-
 Trade-offs
 ----------
 - No APOC / GDS algorithms (unsupported on Aura Free).
@@ -30,11 +25,13 @@ Future extensions (TODO)
 - Optionally implement local fallback analytics via NetworkX.
 """
 
-from typing import Any, List, Tuple, Dict
-from .db_async import get_driver
+from typing import List, Tuple, Dict, Optional
+from .db_async import get_driver, AsyncNeo4jDriver
 
-
-async def degree(username: str, driver=None) -> int:
+async def degree(
+        username: str, 
+        driver: Optional[AsyncNeo4jDriver] = None
+    ) -> int:
     """
     Return number of direct connections (friends) for a given user.
 
@@ -54,8 +51,10 @@ async def degree(username: str, driver=None) -> int:
     result = await driver.run_query(query, {"username": username})
     return result[0]["degree"] if result else 0
 
-
-async def pagerank(top_n: int = 10, driver=None) -> List[Tuple[str, float]]:
+async def pagerank(
+        top_n: int = 10, 
+        driver: Optional[AsyncNeo4jDriver] = None
+    ) -> List[Tuple[str, float]]:
     """
     Simulate influence ranking by counting user connections.
 
@@ -82,8 +81,9 @@ async def pagerank(top_n: int = 10, driver=None) -> List[Tuple[str, float]]:
         (row["username"], round(row["degree"] / max_deg, 3)) for row in result
     ]
 
-
-async def community_detection(driver=None) -> Dict[str, str]:
+async def community_detection(
+        driver: Optional[AsyncNeo4jDriver] = None
+    ) -> Dict[str, str]:
     """
     Placeholder for community detection.
     Assigns mock community groups deterministically by username hash.
