@@ -66,7 +66,7 @@ async def pagerank(
     query = """
     MATCH (u:User)-[:FRIEND_WITH]-(f:User)
     RETURN u.username AS username, count(DISTINCT f) AS degree
-    ORDER BY degree DESC
+    ORDER BY degree DESC, username
     LIMIT $top_n
     """
     if driver is None:
