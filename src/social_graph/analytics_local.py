@@ -48,7 +48,6 @@ async def pagerank_local(
         pr = {n: degs[n] / max_deg for n in degs}
 
     # Stable ordering: sort by score desc, then username asc
-    # vegorla: better to use min heap technique and avoid sort of full list
     sorted_items = sorted(
         pr.items(),
         key=lambda it: (-it[1], it[0])  # negative score => descending, then username
@@ -70,16 +69,31 @@ async def _fetch_graph_snapshot(
     if driver is None:
         driver = get_driver()
 
-    # vegorla: follow clean code and create small focused functions
-    # Fetch nodes to capture isolated users
+    nodes = await _fetch_user_nodes(driver)
+    edges = await _fetch_friend_edges(driver)
+
+    return nodes, edges
+
+async def _fetch_user_nodes(
+    driver: AsyncNeo4jDriver,
+) -> List[str]:
+    """
+    Fetch all user nodes from the database.
+    """
     node_query = "MATCH (u:User) RETURN u.username AS username"
     node_rows = await driver.run_query(node_query, {})
-    nodes = [r["username"] for r in node_rows] if node_rows else []
+    return [r["username"] for r in node_rows] if node_rows else []
 
-    # vegorla: apply query optimization to fetch unique key value pairs
-    # Fetch friendships (both directions may exist in DB; we store as undirected edges)
+async def _fetch_friend_edges(
+    driver: AsyncNeo4jDriver,
+) -> List[Tuple[str, str]]:
+    """
+    Fetch all friendship edges from the database.
+    """
+
     edge_query = """
     MATCH (u:User)-[:FRIEND_WITH]-(v:User)
+    WHERE u.username < v.username
     RETURN u.username AS src, v.username AS dst
     """
     edge_rows = await driver.run_query(edge_query, {})
@@ -91,5 +105,4 @@ async def _fetch_graph_snapshot(
             # ignore self-loops
             if src and dst and src != dst:
                 edges.append((src, dst))
-
-    return nodes, edges
+    return edges
