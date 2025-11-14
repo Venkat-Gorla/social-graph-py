@@ -2,43 +2,6 @@ import networkx as nx
 from typing import List, Tuple, Dict, Optional
 from .db_async import get_driver, AsyncNeo4jDriver
 
-# --- Helper: fetch snapshot of nodes + edges from Neo4j ---
-async def _fetch_graph_snapshot(
-    driver: Optional[AsyncNeo4jDriver] = None,
-) -> Tuple[List[str], List[Tuple[str, str]]]:
-    """
-    Return a snapshot of the user graph as (nodes, edges).
-    - nodes: list of usernames (includes isolated users)
-    - edges: list of (src, dst) username tuples (undirected)
-    """
-    if driver is None:
-        driver = get_driver()
-
-    # vegorla: follow clean code and create small focused functions
-    # Fetch nodes to capture isolated users
-    node_query = "MATCH (u:User) RETURN u.username AS username"
-    node_rows = await driver.run_query(node_query, {})
-    nodes = [r["username"] for r in node_rows] if node_rows else []
-
-    # vegorla: apply query optimization to fetch unique key value pairs
-    # Fetch friendships (both directions may exist in DB; we store as undirected edges)
-    edge_query = """
-    MATCH (u:User)-[:FRIEND_WITH]-(v:User)
-    RETURN u.username AS src, v.username AS dst
-    """
-    edge_rows = await driver.run_query(edge_query, {})
-    edges: List[Tuple[str, str]] = []
-    if edge_rows:
-        for r in edge_rows:
-            src = r["src"]
-            dst = r["dst"]
-            # ignore self-loops
-            if src and dst and src != dst:
-                edges.append((src, dst))
-
-    return nodes, edges
-
-
 # --- Public: local PageRank fallback ---
 async def pagerank_local(
     top_n: int = 10,
@@ -94,3 +57,39 @@ async def pagerank_local(
     # Normalize or present as-is: keep raw pagerank scores but round for display
     top = sorted_items[:top_n]
     return [(user, round(score, 3)) for user, score in top]
+
+# --- Helper: fetch snapshot of nodes + edges from Neo4j ---
+async def _fetch_graph_snapshot(
+    driver: Optional[AsyncNeo4jDriver] = None,
+) -> Tuple[List[str], List[Tuple[str, str]]]:
+    """
+    Return a snapshot of the user graph as (nodes, edges).
+    - nodes: list of usernames (includes isolated users)
+    - edges: list of (src, dst) username tuples (undirected)
+    """
+    if driver is None:
+        driver = get_driver()
+
+    # vegorla: follow clean code and create small focused functions
+    # Fetch nodes to capture isolated users
+    node_query = "MATCH (u:User) RETURN u.username AS username"
+    node_rows = await driver.run_query(node_query, {})
+    nodes = [r["username"] for r in node_rows] if node_rows else []
+
+    # vegorla: apply query optimization to fetch unique key value pairs
+    # Fetch friendships (both directions may exist in DB; we store as undirected edges)
+    edge_query = """
+    MATCH (u:User)-[:FRIEND_WITH]-(v:User)
+    RETURN u.username AS src, v.username AS dst
+    """
+    edge_rows = await driver.run_query(edge_query, {})
+    edges: List[Tuple[str, str]] = []
+    if edge_rows:
+        for r in edge_rows:
+            src = r["src"]
+            dst = r["dst"]
+            # ignore self-loops
+            if src and dst and src != dst:
+                edges.append((src, dst))
+
+    return nodes, edges
