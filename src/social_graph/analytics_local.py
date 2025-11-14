@@ -2,7 +2,7 @@ import networkx as nx
 from typing import List, Tuple, Dict, Optional
 from .db_async import get_driver, AsyncNeo4jDriver
 
-# --- Public: local PageRank fallback ---
+# vegorla: community detection using NetworkX
 async def pagerank_local(
     top_n: int = 10,
     alpha: float = 0.85,
@@ -13,13 +13,16 @@ async def pagerank_local(
     """
     Compute PageRank locally (NetworkX) as a fallback when GDS is unavailable.
 
+    Notes:
+        NetworkX implements the power-iteration algorithm — repeatedly updating
+        PageRank scores until the change between iterations is below `tol`.
+
     Returns:
-        List of (username, score) sorted by score desc, then username for tie-breaks.
+        List of (username, score) sorted by score desc, then username asc.
         Scores are rounded to 3 decimal places for presentation.
     """
     nodes, edges = await _fetch_graph_snapshot(driver)
 
-    # Build undirected graph; NetworkX will deduplicate edges
     G = nx.Graph()
     if nodes:
         G.add_nodes_from(nodes)
@@ -29,35 +32,20 @@ async def pagerank_local(
     if G.number_of_nodes() == 0:
         return []
 
-    # vegorla: the structure of "pr" seems different for try and except cases, also
-    # we are accessing it outside the block where it is created. 
-    # Can we remove the fallback?
-
-    # Compute PageRank (NetworkX implements the power-iteration algorithm)
-    try:
-        pr: Dict[str, float] = nx.pagerank(
-            G, alpha=alpha, max_iter=max_iter, tol=tol
-        )
-    except Exception as exc:
-        # For robustness in MVP: fall back to degree-based proxy if pagerank fails
-        # (e.g., convergence issues on pathological graphs)
-        degs = dict(G.degree())
-        if not degs:
-            return []
-        max_deg = max(degs.values()) or 1
-        pr = {n: degs[n] / max_deg for n in degs}
+    # Compute PageRank (no fallback; bubble up errors if any)
+    pr: Dict[str, float] = nx.pagerank(
+        G, alpha=alpha, max_iter=max_iter, tol=tol
+    )
 
     # Stable ordering: sort by score desc, then username asc
     sorted_items = sorted(
         pr.items(),
-        key=lambda it: (-it[1], it[0])  # negative score => descending, then username
+        key=lambda it: (-it[1], it[0])
     )
 
-    # Normalize or present as-is: keep raw pagerank scores but round for display
     top = sorted_items[:top_n]
     return [(user, round(score, 3)) for user, score in top]
 
-# --- Helper: fetch snapshot of nodes + edges from Neo4j ---
 async def _fetch_graph_snapshot(
     driver: Optional[AsyncNeo4jDriver] = None,
 ) -> Tuple[List[str], List[Tuple[str, str]]]:
