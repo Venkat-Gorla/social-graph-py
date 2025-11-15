@@ -1,8 +1,8 @@
 import networkx as nx
 from typing import List, Tuple, Dict, Optional
+from typing import Set
 from .db_async import get_driver, AsyncNeo4jDriver
 
-# vegorla: community detection using NetworkX
 async def pagerank_local(
     top_n: int = 10,
     alpha: float = 0.85,
@@ -38,6 +38,26 @@ async def pagerank_local(
 
     top = sorted_items[:top_n]
     return [(user, round(score, 3)) for user, score in top]
+
+async def detect_communities_local(
+    driver: Optional[AsyncNeo4jDriver] = None,
+) -> List[Set[str]]:
+    """
+    Detect user communities using NetworkX greedy modularity algorithm.
+
+    Returns:
+        A list of communities, each community is a set of usernames.
+        Communities are sorted by descending size.
+    """
+    G = await _create_graph(driver)
+    if G.number_of_nodes() == 0:
+        return []
+
+    communities = nx.algorithms.community.greedy_modularity_communities(G)
+    communities_sorted = sorted(communities, key=lambda c: -len(c))
+
+    # Convert frozensets -> plain sets for easier JSON debugging
+    return [set(c) for c in communities_sorted]
 
 async def _create_graph(
     driver: Optional[AsyncNeo4jDriver] = None,

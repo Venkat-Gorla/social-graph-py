@@ -11,6 +11,7 @@ async def demo_analytics():
     print("\n=== Running NetworkX Analytics Demo ===")
 
     await demo_pagerank()
+    await demo_communities()
 
     await close_driver()
     print("\nDemo completed successfully.\n")
@@ -34,6 +35,13 @@ async def demo_pagerank():
     ranking = await analytics_local.pagerank_local()
     for user, score in ranking:
         print(f"  - {user}: {score}")
+
+async def demo_communities():
+    print("\nNetworkX Communities (Greedy Modularity):")
+    communities = await analytics_local.detect_communities_local()
+    for idx, group in enumerate(communities, start=1):
+        members = ", ".join(sorted(group))
+        print(f"  Community {idx}: {members}")
 
 if __name__ == "__main__":
     asyncio.run(demo_analytics())
