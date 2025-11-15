@@ -29,4 +29,4 @@ async def test_compute_score_zero_cases(mocker):
     mocker.patch.object(rec, "_get_degree", return_value=0)
 
     score = await rec.compute_score("alice", "bob")
-    assert score == 0.0  # 0 mutuals → 0 score
+    assert score == 0.0  # 0 mutuals -> 0 score
