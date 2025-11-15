@@ -87,24 +87,6 @@ social-graph-py/
 
 ## 🧱 Architecture
 
-```mermaid
-flowchart TD
-
-    A[CLI Demo Scripts] --> B[Recommender Engine]
-    A --> C[Analytics Local (NetworkX)]
-    B --> D[Async Neo4j Driver]
-    C --> D
-
-    subgraph DB[Neo4j Aura Free]
-        E[(User Nodes)]
-        F[(FRIEND_WITH Edges)]
-    end
-
-    D --> DB
-```
-
-## ASCII Diagram
-
 ```
                ┌─────────────────────┐
                │    Demo Scripts     │
