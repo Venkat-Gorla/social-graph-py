@@ -1,6 +1,6 @@
 # 📌 Social Graph — Async Neo4j + NetworkX Project
 
-**vegorla pending: A tech stack badge row**
+**vegorla pending: tech stack badge row, merge with analytics Readme**
 
 A production-quality **social graph system** built in Python, demonstrating scalable system design, graph modeling, recommendation algorithms, and analytics using Neo4j Aura Free.
 
@@ -9,8 +9,8 @@ This project uses:
 - **Async Python** for non-blocking I/O
 - **NetworkX** for local PageRank & community fallbacks
 - **Heap-optimized recommendation engine**
-- **Strict, fully mocked unit tests**
-- **Deterministic CLI demos**
+- Strict, fully mocked unit tests
+- Deterministic CLI demos
 
 ## 🚀 Features
 
@@ -36,13 +36,13 @@ This project uses:
 social-graph-py/
 ├─ src/social_graph/
 │  ├─ config.py
-│  ├─ db.py
-│  ├─ db_async.py # Async driver wrapper
+│  ├─ db.py              # Neo4j driver wrapper
+│  ├─ db_async.py        # Async driver wrapper
 │  ├─ models.py
 │  ├─ service.py
-│  ├─ service_async.py # Async Neo4j operations
-│  ├─ recommender.py # Scoring & top-K ranking
-│  ├─ analytics.py # Cypher-based analytics
+│  ├─ service_async.py   # Async Neo4j operations
+│  ├─ recommender.py     # Scoring & top-K ranking
+│  ├─ analytics.py       # Cypher-based analytics
 │  ├─ analytics_local.py # NetworkX PageRank & communities
 ├─ tests/
 │  ├─ integration/
