@@ -1,70 +1,55 @@
-## 🧮 Analytics Module (MVP)
+# 📊 Analytics Module (Local NetworkX Fallback)
 
-### Overview
+The project includes a lightweight analytics layer designed for environments where Neo4j Aura Free does not support APOC or Graph Data Science (GDS).
+The module provides **pure Cypher + local Python analytics** and is fully asynchronous.
 
-This module provides lightweight, Cypher-only analytics for the Social Graph Resume Project.
-It demonstrates graph insight capabilities (connection count, influence ranking, and community grouping) while staying fully compatible with **Neo4j Aura Free**.
+### ✨ Features
 
-### Location
+- **Local graph construction** using data fetched from Neo4j (mocked during tests)
+- **PageRank (NetworkX)** for ranking influential users
+- **Community detection** using greedy modularity
+- **Degree + simple structural metrics** used by the Recommender
+- **Graph debugging helper**: adjacency-list printing for demos and CLI visibility
 
-`src/social_graph/analytics.py`
+### 🧪 Unit-Test Friendly
 
-### Features
+Analytics functions are written to be fully testable without Neo4j:
 
-| Function                | Purpose                                               | Implementation                |
-| ----------------------- | ----------------------------------------------------- | ----------------------------- |
-| `degree(username)`      | Counts number of direct friendships                   | Simple Cypher query           |
-| `pagerank(top_n)`       | Ranks users by connection count (simulated influence) | Degree-based approximation    |
-| `community_detection()` | Groups users into placeholder “communities”           | Deterministic hash-based mock |
+- All DB access is mockable
+- Unit tests enforce **zero live database calls**
+- NetworkX algorithms run entirely in memory
+- Deterministic, reproducible results in all tests
 
-### Example Usage
+### 🧱 Example Outputs
 
-```python
-from src.social_graph import analytics
+From the included demo:
 
-degree = await analytics.degree("alice")
-ranking = await analytics.pagerank(top_n=5)
-communities = await analytics.community_detection()
+```
+Input Graph (Adjacency List):
+  alice: bob, carol, frank
+  bob: alice, dave
+  carol: alice, dave
+  dave: bob, carol, eve
+  eve: dave, frank
+  frank: alice, eve
 
-print(degree, ranking, communities)
+Top users by NetworkX PageRank:
+  - alice: 0.21
+  - dave: 0.21
+  - eve: 0.147
+  - frank: 0.147
+  - bob: 0.144
+  - carol: 0.144
+
+NetworkX Communities (Greedy Modularity):
+  Community 1: alice, bob, carol, dave
+  Community 2: eve, frank
 ```
 
-### Design Notes
+### 📁 Code Location
 
-- **Asynchronous architecture:**
-  Uses the shared async Neo4j driver (`get_driver()`) defined in `db_async.py`.
-  No new connection logic — consistent with the rest of the project.
-- **Neo4j-first design:**
-  Queries run entirely inside the database; no data export or local traversal.
-- **Minimalism for MVP:**
-  Focused on working examples that convey graph analytics understanding, without GDS/APOC or NetworkX.
-
-### Trade-offs and Future Work
-
-| Limitation                                 | Reason                         | Future Upgrade                                         |
-| ------------------------------------------ | ------------------------------ | ------------------------------------------------------ |
-| No PageRank, Louvain, or Label Propagation | GDS not supported on Aura Free | Add when migrating to Aura DS or Enterprise            |
-| No local analytics fallback                | Out of MVP scope               | Add optional NetworkX fallback                         |
-| Mock community grouping                    | Keeps MVP lightweight          | Replace with real community detection algorithms later |
-
-### Learning Outcomes
-
-This MVP demonstrates:
-
-- Understanding of **graph metrics** (degree, influence, communities).
-- Ability to design **async data pipelines** with Neo4j.
-- Awareness of **trade-offs** between free-tier limitations and scalable analytics.
-
-## 🎓 What I Learned — Analytics Module
-
-Building this analytics component gave me hands-on experience with **practical graph analysis** in Neo4j using **pure Cypher**.
-
-Key takeaways:
-
-- **Graph Query Thinking:** Learned to design and query relationships directly, focusing on connections and influence, not just tabular data.
-- **Async Architecture:** Integrated Neo4j with asynchronous Python workflows, ensuring scalability and clean concurrency.
-- **Design Trade-offs:** Understood the balance between free-tier constraints (Aura Free) and advanced analytics (APOC / GDS).
-- **Progressive Enhancement Mindset:** Built a working MVP first, documented clear upgrade paths (e.g., real PageRank, Louvain).
-- **Software Craftsmanship:** Practiced maintainable modular code — clean, typed, and consistent with the rest of the project.
-
-This module represents a **bridge between theory and practice**: I implemented essential analytics features that _work today_, while designing an architecture that can scale into more sophisticated graph intelligence tomorrow.
+```
+src/social_graph/analytics_local.py
+scripts/demo_analytics_local.py
+tests/unit/test_analytics_local_unit.py
+```
