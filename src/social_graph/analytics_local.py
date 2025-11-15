@@ -21,14 +21,7 @@ async def pagerank_local(
         List of (username, score) sorted by score desc, then username asc.
         Scores are rounded to 3 decimal places for presentation.
     """
-    nodes, edges = await _fetch_graph_snapshot(driver)
-
-    G = nx.Graph()
-    if nodes:
-        G.add_nodes_from(nodes)
-    if edges:
-        G.add_edges_from(edges)
-
+    G = await _create_graph(driver)
     if G.number_of_nodes() == 0:
         return []
 
@@ -45,6 +38,22 @@ async def pagerank_local(
 
     top = sorted_items[:top_n]
     return [(user, round(score, 3)) for user, score in top]
+
+async def _create_graph(
+    driver: Optional[AsyncNeo4jDriver] = None,
+) -> nx.Graph:
+    """
+    Create a NetworkX graph from the user graph in the database.
+    """
+    nodes, edges = await _fetch_graph_snapshot(driver)
+
+    G = nx.Graph()
+    if nodes:
+        G.add_nodes_from(nodes)
+    if edges:
+        G.add_edges_from(edges)
+
+    return G
 
 async def _fetch_graph_snapshot(
     driver: Optional[AsyncNeo4jDriver] = None,
