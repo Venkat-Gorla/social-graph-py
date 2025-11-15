@@ -68,7 +68,7 @@ def print_adjacency_list(G: nx.Graph) -> None:
         print("Graph is empty.")
         return
 
-    print("\nInput Graph (Adjacency List):")
+    print("Input Graph (Adjacency List):")
     for node, neighbors in sorted(G.adjacency()):
         nbrs = ", ".join(sorted(neighbors.keys()))
         print(f"  {node}: {nbrs}")

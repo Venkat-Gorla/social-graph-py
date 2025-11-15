@@ -56,3 +56,95 @@ async def test_guard_blocks_db_access(mocker):
     """
     with pytest.raises(AssertionError):
         await analytics_local.pagerank_local()
+
+@pytest.mark.asyncio
+async def test_detect_communities_local_path_splits_into_two(mocker):
+    """
+    Test detect_communities_local() on a simple path graph.
+
+    Graph:
+        a -- b -- c -- d
+
+    NetworkX greedy_modularity_communities() is expected to split
+    the path into two communities:
+        {"a", "b"} and {"c", "d"}
+    """
+    mock_nodes = ["a", "b", "c", "d"]
+    mock_edges = [("a", "b"), ("b", "c"), ("c", "d")]
+
+    mocker.patch.object(
+        analytics_local,
+        "_fetch_graph_snapshot",
+        return_value=(mock_nodes, mock_edges),
+    )
+
+    communities = await analytics_local.detect_communities_local()
+
+    # Expected two communities, sorted by size (both size 2)
+    assert len(communities) == 2
+    assert {"a", "b"} in communities
+    assert {"c", "d"} in communities
+
+@pytest.mark.asyncio
+async def test_detect_communities_two_clusters(mocker):
+    """
+    Graph:
+        Cluster 1: a -- b -- c
+        Cluster 2: x -- y
+    Expected: two communities sorted by size desc.
+    """
+    mock_nodes = ["a", "b", "c", "x", "y"]
+    mock_edges = [("a", "b"), ("b", "c"), ("x", "y")]
+
+    mocker.patch.object(
+        analytics_local,
+        "_fetch_graph_snapshot",
+        return_value=(mock_nodes, mock_edges),
+    )
+
+    communities = await analytics_local.detect_communities_local()
+
+    # Should detect two communities
+    assert len(communities) == 2
+
+    # Communities sorted largest -> smallest
+    assert communities[0] == {"a", "b", "c"}
+    assert communities[1] == {"x", "y"}
+
+@pytest.mark.asyncio
+async def test_detect_communities_local_fully_connected(mocker):
+    """
+    detect_communities_local(): fully connected graph should produce
+    exactly one community containing all nodes.
+    """
+    mock_nodes = ["a", "b", "c"]
+    mock_edges = [
+        ("a", "b"),
+        ("a", "c"),
+        ("b", "c"),
+    ]
+
+    mocker.patch.object(
+        analytics_local,
+        "_fetch_graph_snapshot",
+        return_value=(mock_nodes, mock_edges),
+    )
+
+    communities = await analytics_local.detect_communities_local()
+
+    assert len(communities) == 1
+    assert communities[0] == {"a", "b", "c"}
+
+@pytest.mark.asyncio
+async def test_detect_communities_local_empty_graph(mocker):
+    """
+    detect_communities_local(): empty graph should return an empty list.
+    """
+    mocker.patch.object(
+        analytics_local,
+        "_fetch_graph_snapshot",
+        return_value=([], []),
+    )
+
+    communities = await analytics_local.detect_communities_local()
+    assert communities == []

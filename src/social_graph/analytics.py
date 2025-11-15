@@ -1,26 +1,21 @@
 """
-Asynchronous analytics module for Social Graph Resume Project (MVP).
+Asynchronous analytics module for the Social Graph Resume Project (MVP).
 
-Purpose
--------
-Provide minimal, Cypher-only analytics functions compatible with Neo4j Aura Free.
+Overview
+--------
+Provides lightweight, Cypher-based analytics that run on Neo4j Aura Free
+without requiring APOC, GDS, or external computation frameworks.
 
-Functions
----------
-- degree(username): count direct connections for a given user.
-- pagerank(top_n): simulate user influence ranking by connection counts.
-- community_detection(): simple placeholder illustrating community concept.
+Included Analytics
+------------------
+- degree(username): returns the number of direct friendships for a user.
+- pagerank(top_n): computes an influence-style ranking based on connection counts.
+- detect_communities(): identifies simple community groupings using Cypher queries.
 
-Trade-offs
-----------
-- No APOC / GDS algorithms (unsupported on Aura Free).
-- No NetworkX or local computation fallback (out of MVP scope).
-- Simulated PageRank and mock communities to demonstrate understanding.
-
-Future extensions (TODO)
-------------------------
-- Add real PageRank, Louvain, or Label Propagation using GDS.
-- Optionally implement local fallback analytics via NetworkX.
+Notes
+-----
+This module focuses on small, dependency-free analytics suitable for
+demonstrating graph reasoning, async patterns, and Neo4j integration.
 """
 
 from typing import List, Tuple, Dict, Optional
