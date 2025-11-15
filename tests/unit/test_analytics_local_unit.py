@@ -50,6 +50,9 @@ async def test_pagerank_local_basic(mocker):
 
 @pytest.mark.asyncio
 async def test_guard_blocks_db_access(mocker):
-    # Do NOT patch _fetch_graph_snapshot -> should fall through to DB calls
+    """
+    Verify that failing to mock _fetch_graph_snapshot triggers
+    DB-access guard and raises AssertionError.
+    """
     with pytest.raises(AssertionError):
         await analytics_local.pagerank_local()
