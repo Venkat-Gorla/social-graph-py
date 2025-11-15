@@ -1,4 +1,8 @@
 """
+Demo runner for local Social Graph Analytics.
+- Builds a small test graph and runs PageRank and community detection via
+  the local NetworkX-based analytics module.
+- run with: uv run python scripts/demo_analytics_local.py
 """
 
 import asyncio
@@ -6,7 +10,7 @@ from social_graph import analytics_local
 from social_graph.db_async import close_driver
 from social_graph.test_utils import clear_graph, setup_test_graph
 
-async def demo_analytics():
+async def demo_analytics_local():
     await setup_demo_graph()
     print("\n=== Running NetworkX Analytics Demo ===")
 
@@ -44,4 +48,4 @@ async def demo_communities():
         print(f"  Community {idx}: {members}")
 
 if __name__ == "__main__":
-    asyncio.run(demo_analytics())
+    asyncio.run(demo_analytics_local())

@@ -1,6 +1,7 @@
 """
 Demo runner for the Social Graph Analytics MVP.
-Executes degree, pagerank, and community detection using the shared async Neo4j driver.
+- Executes degree, pagerank, and community detection using the shared async Neo4j driver.
+- run with: uv run python scripts/demo_analytics.py
 """
 
 import asyncio
