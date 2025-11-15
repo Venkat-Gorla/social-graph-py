@@ -12,6 +12,10 @@ from social_graph.test_utils import clear_graph, setup_test_graph
 
 async def demo_analytics_local():
     await setup_demo_graph()
+
+    G = await analytics_local._create_graph()
+    analytics_local.print_adjacency_list(G)
+
     print("\n=== Running NetworkX Analytics Demo ===")
 
     await demo_pagerank()

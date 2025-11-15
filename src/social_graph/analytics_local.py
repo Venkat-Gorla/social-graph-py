@@ -59,6 +59,20 @@ async def detect_communities_local(
     # Convert frozensets -> plain sets for easier JSON debugging
     return [set(c) for c in communities_sorted]
 
+def print_adjacency_list(G: nx.Graph) -> None:
+    """
+    Print an adjacency-list representation of the graph.
+    Output is sorted for deterministic CLI/debugging display.
+    """
+    if G.number_of_nodes() == 0:
+        print("Graph is empty.")
+        return
+
+    print("\nInput Graph (Adjacency List):")
+    for node, neighbors in sorted(G.adjacency()):
+        nbrs = ", ".join(sorted(neighbors.keys()))
+        print(f"  {node}: {nbrs}")
+
 async def _create_graph(
     driver: Optional[AsyncNeo4jDriver] = None,
 ) -> nx.Graph:
