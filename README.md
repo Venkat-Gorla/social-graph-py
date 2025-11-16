@@ -44,6 +44,10 @@ Core capabilities implemented end-to-end using async I/O and Neo4j:
 - Compute graph metrics (degree, PageRank, communities)
 - Uses free, cloud-hosted [Neo4j Aura](https://neo4j.com/cloud/aura-free/) — no local DB install needed
 
+### 🗺️ Sample Social Graph
+
+![Sample social graph](./scripts/analytics-sample-graph.png)
+
 ## 🧰 Tech Stack
 
 | Component                      | Technology              |
