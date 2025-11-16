@@ -1,6 +1,8 @@
 # 📌 Social Graph — Async Neo4j + NetworkX Project
 
 **vegorla pending: tech stack badge row, merge with analytics Readme**
+**Automated tests in action**
+**Toc**
 
 A production-quality **social graph system** built in Python, demonstrating scalable system design, graph modeling, recommendation algorithms, and analytics using Neo4j Aura Free.
 
@@ -10,6 +12,7 @@ This project uses:
 - **NetworkX** for local PageRank & community fallbacks
 - **Heap-optimized recommendation engine**
 - Strict, fully mocked unit tests
+- End-end integration tests
 - Deterministic CLI demos
 
 ## 🚀 Features
@@ -39,7 +42,7 @@ social-graph-py/
 │  ├─ db.py              # Neo4j driver wrapper
 │  ├─ db_async.py        # Async driver wrapper
 │  ├─ models.py
-│  ├─ service.py
+│  ├─ service.py         # Neo4j operations for the social graph
 │  ├─ service_async.py   # Async Neo4j operations
 │  ├─ recommender.py     # Scoring & top-K ranking
 │  ├─ analytics.py       # Cypher-based analytics
@@ -51,8 +54,6 @@ social-graph-py/
 │  ├─ demo_analytics.py
 │  ├─ demo_analytics_local.py
 ```
-
-**vegorla New content added here**
 
 ## Summary / Highlights
 
@@ -72,8 +73,8 @@ social-graph-py/
 
 - **Test-driven, production-style code**
 
-  - Full mocking of DB access
-  - Unit tests exercise all core logic with in-memory graphs
+  - End-end integration tests with sample social graphs
+  - Unit tests exercise all core logic with in-memory graphs and full mocking of DB access
   - Guard fixtures ensure no accidental network calls
 
 - **Scripted demos**
@@ -89,7 +90,8 @@ social-graph-py/
 
 ```
                ┌─────────────────────┐
-               │    Demo Scripts     │
+               │    Demo Scripts &   │
+               │    Automated Tests  │
                └──────────┬──────────┘
                           │
         ┌─────────────────┼───────────────────┐
@@ -108,6 +110,18 @@ social-graph-py/
               │ Neo4j Aura Free Graph  │
               └────────────────────────┘
 ```
+
+## 🎯 Why This Project?
+
+This codebase demonstrates:
+
+✅ Strong async Python fundamentals  
+✅ Clean separation of concerns  
+✅ Non-trivial algorithms (PageRank, communities, heaps)  
+✅ Realistic data modeling  
+✅ Production-grade test practice  
+✅ CI-friendly structure  
+✅ Readable, maintainable code
 
 ## Run the local analytics demo
 
@@ -132,7 +146,7 @@ NetworkX Communities:
   Community 2: eve, frank
 ```
 
-## 📦 **Deployment**
+## 📦 Deployment
 
 Since all logic is pure Python + async I/O:
 
@@ -140,18 +154,6 @@ Since all logic is pure Python + async I/O:
 - No Docker required
 - Neo4j Aura Free compatible
 - Can run analytics entirely offline using NetworkX mode
-
-## 🎯 Why This Project?
-
-This codebase demonstrates:
-
-✓ strong async Python fundamentals
-✓ clean separation of concerns
-✓ non-trivial algorithms (PageRank, communities, heaps)
-✓ realistic data modeling
-✓ production-grade test practice
-✓ CI-friendly structure
-✓ readable, maintainable code
 
 ## 📊 Future Enhancements
 
