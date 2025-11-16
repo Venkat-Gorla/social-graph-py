@@ -1,15 +1,12 @@
 # 📌 Social Graph — Async Neo4j + NetworkX Project
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
-![Asyncio](https://img.shields.io/badge/Async-asyncio-green)
-![pytest](https://img.shields.io/badge/Tests-pytest-yellow)
-![uv](https://img.shields.io/badge/Package%20Manager-uv-9cf)
-
-**vegorla pending:**
-
-- tech stack badge row, merge with analytics Readme
-- sample graph picture
-- Automated tests in action
+![Async](https://img.shields.io/badge/Async-asyncio-4D8C57?logo=python)
+![Neo4j](https://img.shields.io/badge/Database-Neo4j%20Aura%20Free-008CC1?logo=neo4j)
+![NetworkX](https://img.shields.io/badge/Graph-NetworkX-0C6AA6)
+![Tests](https://img.shields.io/badge/Tests-pytest-yellow?logo=pytest)
+![Package Manager](https://img.shields.io/badge/uv-package_manager-9cf)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
 <!-- TODO: Table of Contents -->
 
@@ -20,29 +17,36 @@ This project uses:
 - **Async Python** for non-blocking I/O
 - **NetworkX** for local PageRank & community detection
 - **Heap-optimized recommendation engine**
+- End-to-end integration tests
 - Strict, fully mocked unit tests
-- End-end integration tests
 - Deterministic CLI demos
 
 ## 🚀 Features
 
+Core capabilities implemented end-to-end using async I/O and Neo4j:
+
 - Create and manage users
-- Create/remove friendships (bidirectional)
+- Manage bidirectional friendships
 - List direct friends
 - Recommend friends (mutual friends & 2nd-degree connections)
 - Compute graph metrics (degree, PageRank, communities)
 - Uses free, cloud-hosted [Neo4j Aura](https://neo4j.com/cloud/aura-free/) — no local DB install needed
 
-## 🧱 Tech Stack
+## 🧰 Tech Stack
 
 | Component                      | Technology              |
 | ------------------------------ | ----------------------- |
 | Language                       | Python 3.11+            |
 | Graph Database                 | Neo4j Aura Free (Cloud) |
-| Testing                        | pytest                  |
-| Lightweight dependency manager | uv                      |
+| Testing Framework              | pytest                  |
+| Lightweight Dependency Manager | uv                      |
 
 ## 📁 Project Structure
+
+Organized into clean modules separating DB access, analytics, and recommendation logic.
+
+> **Note:** The project includes both synchronous (`service.py`, `db.py`) and asynchronous (`service_async.py`, `db_async.py`) implementations.
+> The **async versions are the primary, recommended APIs**, and the sync modules are kept for reference and compatibility.
 
 ```
 social-graph-py/
@@ -82,7 +86,7 @@ social-graph-py/
 
 - **Test-driven, production-style code**
 
-  - End-end integration tests with sample social graphs
+  - End-to-end integration tests with sample social graphs
   - Unit tests exercise all core logic with in-memory graphs and full mocking of DB access
   - Guard fixtures ensure no accidental network calls
 
@@ -90,12 +94,13 @@ social-graph-py/
 
   - Build a sample graph
   - Print adjacency list
-  - Run PageRank + communities
-  - Print analytics
+  - Run and print analytics
 
 - **Clean, modular architecture**
 
 ## 🧱 Architecture
+
+The system is composed of three loosely coupled layers:
 
 ```
                ┌─────────────────────┐
@@ -129,7 +134,6 @@ This codebase demonstrates:
 ✅ Non-trivial algorithms (PageRank, communities, heaps)  
 ✅ Realistic data modeling  
 ✅ Production-grade test practice  
-✅ CI-friendly structure  
 ✅ Readable, maintainable code
 
 ## 📦 Installation
@@ -170,15 +174,14 @@ Since all logic is pure Python + async I/O:
 
 - Works on any platform
 - No Docker required
-- Neo4j Aura Free compatible
+- Runs on Neo4j Aura Free (fully managed, cloud-hosted)
 - Can run analytics entirely offline using NetworkX mode
 
-## 📊 Future Enhancements
+## 🔮 Future Enhancements
 
 - Add follower/following relationships
 - Integrate Neo4j Graph Data Science (GDS)
 - Add REST API wrapper (FastAPI)
-- Include Dockerfile for optional container deployment
 - Extend design for AWS Neptune serverless
 
 ## 🏷️ License
