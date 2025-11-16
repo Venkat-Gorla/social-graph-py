@@ -2,16 +2,18 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
 ![Asyncio](https://img.shields.io/badge/Async-asyncio-green)
-![pytest](https://img.shields.io/badge/Tests-pytest%20%2B%20fakeredis-yellow)
+![pytest](https://img.shields.io/badge/Tests-pytest-yellow)
 ![uv](https://img.shields.io/badge/Package%20Manager-uv-9cf)
 
 **vegorla pending:**
 
 - tech stack badge row, merge with analytics Readme
+- sample graph picture
 - Automated tests in action
-- Toc
 
-A production-quality **social graph system** built in Python, demonstrating scalable system design, graph modeling, recommendation algorithms, and analytics using Neo4j Aura Free.
+<!-- TODO: Table of Contents -->
+
+A fully asynchronous social graph system using Neo4j Aura Free and NetworkX, featuring recommendation algorithms, graph analytics, and a clean modular architecture.
 
 This project uses:
 
@@ -62,7 +64,7 @@ social-graph-py/
 │  ├─ demo_analytics_local.py
 ```
 
-## Summary / Highlights
+## 📚 Summary / Highlights
 
 - **Asynchronous Neo4j driver wrapper**
   Encapsulates all database access behind a clean `run_query()` API.
@@ -130,7 +132,16 @@ This codebase demonstrates:
 ✅ CI-friendly structure  
 ✅ Readable, maintainable code
 
-## Run the local analytics demo
+## 📦 Installation
+
+```
+uv sync
+uv run python scripts/demo_analytics.py
+```
+
+> Neo4j Aura connection credentials are read from environment variables defined in config.py.
+
+## ✅ Run the local analytics demo
 
 ```
 uv run python scripts/demo_analytics_local.py
