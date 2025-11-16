@@ -1,9 +1,11 @@
 # 📊 Analytics Module (Local NetworkX Fallback)
 
 The project includes a lightweight analytics layer designed for environments where Neo4j Aura Free does not support APOC or Graph Data Science (GDS).
-The module provides **pure Cypher + local Python analytics** and is fully asynchronous.
+It provides **pure Cypher + local Python analytics**, and all logic is fully asynchronous.
 
-### ✨ Features
+This module acts as a **local analytics fallback** when Neo4j Aura Free cannot run server-side graph algorithms.
+
+## ✨ Features
 
 - **Local graph construction** using data fetched from Neo4j (mocked during tests)
 - **PageRank (NetworkX)** for ranking influential users
@@ -11,7 +13,7 @@ The module provides **pure Cypher + local Python analytics** and is fully asynch
 - **Degree + simple structural metrics** used by the Recommender
 - **Graph debugging helper**: adjacency-list printing for demos and CLI visibility
 
-### 🧪 Unit-Test Friendly
+## 🧪 Unit-Test Friendly
 
 Analytics functions are written to be fully testable without Neo4j:
 
@@ -20,7 +22,7 @@ Analytics functions are written to be fully testable without Neo4j:
 - NetworkX algorithms run entirely in memory
 - Deterministic, reproducible results in all tests
 
-### 🧱 Example Outputs
+## 🧱 Example Outputs
 
 From the included demo:
 
@@ -46,7 +48,11 @@ NetworkX Communities (Greedy Modularity):
   Community 2: eve, frank
 ```
 
-### 📁 Code Location
+### 🗺️ Input Social Graph
+
+![Sample social graph](./scripts/analytics-sample-graph.png)
+
+## 📁 Code Location
 
 ```
 src/social_graph/analytics_local.py
