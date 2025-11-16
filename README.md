@@ -8,8 +8,6 @@
 ![Package Manager](https://img.shields.io/badge/uv-package_manager-9cf)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-<!-- TODO: Table of Contents -->
-
 A fully asynchronous social graph system using Neo4j Aura Free and NetworkX, featuring recommendation algorithms, graph analytics, and a clean modular architecture.
 
 This project uses:
@@ -20,6 +18,20 @@ This project uses:
 - End-to-end integration tests
 - Strict, fully mocked unit tests
 - Deterministic CLI demos
+
+## 📑 Table of Contents
+
+- [🚀 Features](#-features)
+- [🧰 Tech Stack](#-tech-stack)
+- [📁 Project Structure](#-project-structure)
+- [📚 Summary / Highlights](#-summary--highlights)
+- [🧱 Architecture](#-architecture)
+- [🎯 Why This Project?](#-why-this-project)
+- [📦 Installation](#-installation)
+- [✅ Run the local analytics demo](#-run-the-local-analytics-demo)
+- [📦 Deployment](#-deployment)
+- [🔮 Future Enhancements](#-future-enhancements)
+- [🏷️ License](#️-license)
 
 ## 🚀 Features
 
@@ -77,6 +89,9 @@ social-graph-py/
 
   - Neo4j Cypher-only MVP for Aura Free
   - **Local NetworkX fallback** (PageRank + Greedy modularity communities)
+
+    👉 For a deeper explanation of the local NetworkX analytics system, see the dedicated  
+    [📊 Analytics Module README](./README_analytics.md).
 
 - **Recommender engine with tunable weighting**
 
@@ -163,7 +178,7 @@ Top users by NetworkX PageRank:
   - dave: 0.21
   ...
 
-NetworkX Communities:
+NetworkX Communities (Greedy Modularity):
   Community 1: alice, bob, carol, dave
   Community 2: eve, frank
 ```
