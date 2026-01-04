@@ -5,7 +5,6 @@
 ![Neo4j](https://img.shields.io/badge/Database-Neo4j%20Aura%20Free-008CC1?logo=neo4j)
 ![NetworkX](https://img.shields.io/badge/Graph-NetworkX-0C6AA6)
 ![Tests](https://img.shields.io/badge/Tests-pytest-yellow?logo=pytest)
-![Package Manager](https://img.shields.io/badge/uv-package_manager-9cf)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 A fully asynchronous social graph system using Neo4j Aura Free and NetworkX, featuring recommendation algorithms, graph analytics, and a clean modular architecture.
@@ -199,44 +198,34 @@ uv run pytest -v
 **Test Output:**
 
 ```
-C:\Users\venka\Downloads\Udemy\GitHub\social-graph-py>uv run pytest -v
 ========================= test session starts =========================
-platform win32 -- Python 3.13.1, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\venka\Downloads\Udemy\GitHub\social-graph-py\.venv\Scripts\python.exe
-cachedir: .pytest_cache
-rootdir: C:\Users\venka\Downloads\Udemy\GitHub\social-graph-py
-configfile: pyproject.toml
-testpaths: tests
-plugins: asyncio-1.2.0, mock-3.15.1
-asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
 collected 23 items
 
-tests/integration/test_integration_basic.py::test_basic_graph_flow_async PASSED                                                                                      [  4%]
-tests/integration/test_recommender_mutuals.py::test_recommender_mutual_friends PASSED                                                                                [  8%]
-tests/integration/test_recommender_mutuals.py::test_recommender_suggest_friends PASSED                                                                               [ 13%]
-tests/integration/test_recommender_mutuals.py::test_recommender_recommend_top_k PASSED                                                                               [ 17%]
-tests/integration/test_recommender_mutuals.py::test_recommender_recommend_top_k_no_candidates PASSED                                                                 [ 21%]
-tests/unit/test_analytics_local_unit.py::test_pagerank_local_basic PASSED                                                                                            [ 26%]
-tests/unit/test_analytics_local_unit.py::test_guard_blocks_db_access PASSED                                                                                          [ 30%]
-tests/unit/test_analytics_local_unit.py::test_detect_communities_local_path_splits_into_two PASSED                                                                   [ 34%]
-tests/unit/test_analytics_local_unit.py::test_detect_communities_two_clusters PASSED                                                                                 [ 39%]
-tests/unit/test_analytics_local_unit.py::test_detect_communities_local_fully_connected PASSED                                                                        [ 43%]
-tests/unit/test_analytics_local_unit.py::test_detect_communities_local_empty_graph PASSED                                                                            [ 47%]
-tests/unit/test_recommender_heap_logic_unit.py::test_heap_keeps_top_k_only PASSED                                                                                    [ 52%]
-tests/unit/test_recommender_heap_logic_unit.py::test_heap_sorts_ties_by_username PASSED                                                                              [ 56%]
-tests/unit/test_recommender_heap_logic_unit.py::test_heap_called_with_exact_k_ordered PASSED                                                                         [ 60%]
-tests/unit/test_recommender_mutuals_unit.py::test_mutual_friend_count_positive PASSED                                                                                [ 65%]
-tests/unit/test_recommender_mutuals_unit.py::test_mutual_friend_count_zero PASSED                                                                                    [ 69%]
-tests/unit/test_recommender_mutuals_unit.py::test_mutual_friend_count_no_result PASSED                                                                               [ 73%]
-tests/unit/test_recommender_score_unit.py::test_compute_score_math_only PASSED                                                                                       [ 78%]
-tests/unit/test_recommender_score_unit.py::test_compute_score_zero_cases PASSED                                                                                      [ 82%]
-tests/unit/test_recommender_top_k_ranking_unit.py::test_recommend_top_k_ranking PASSED                                                                               [ 86%]
-tests/unit/test_service_unit.py::test_add_user_with_injected_driver PASSED                                                                                           [ 91%]
-tests/unit/test_service_unit.py::test_add_friendship_executes_expected_query PASSED                                                                                  [ 95%]
-tests/unit/test_service_unit.py::test_list_friends_returns_sorted_list PASSED                                                                                        [100%]
+tests/integration/test_integration_basic.py::test_basic_graph_flow_async PASSED [  4%]
+tests/integration/test_recommender_mutuals.py::test_recommender_mutual_friends PASSED [  8%]
+tests/integration/test_recommender_mutuals.py::test_recommender_suggest_friends PASSED [ 13%]
+tests/integration/test_recommender_mutuals.py::test_recommender_recommend_top_k PASSED [ 17%]
+tests/integration/test_recommender_mutuals.py::test_recommender_recommend_top_k_no_candidates PASSED [ 21%]
+tests/unit/test_analytics_local_unit.py::test_pagerank_local_basic PASSED       [ 26%]
+tests/unit/test_analytics_local_unit.py::test_guard_blocks_db_access PASSED     [ 30%]
+tests/unit/test_analytics_local_unit.py::test_detect_communities_local_path_splits_into_two PASSED [ 34%]
+tests/unit/test_analytics_local_unit.py::test_detect_communities_two_clusters PASSED   [ 39%]
+tests/unit/test_analytics_local_unit.py::test_detect_communities_local_fully_connected PASSED [ 43%]
+tests/unit/test_analytics_local_unit.py::test_detect_communities_local_empty_graph PASSED     [ 47%]
+tests/unit/test_recommender_heap_logic_unit.py::test_heap_keeps_top_k_only PASSED             [ 52%]
+tests/unit/test_recommender_heap_logic_unit.py::test_heap_sorts_ties_by_username PASSED       [ 56%]
+tests/unit/test_recommender_heap_logic_unit.py::test_heap_called_with_exact_k_ordered PASSED  [ 60%]
+tests/unit/test_recommender_mutuals_unit.py::test_mutual_friend_count_positive PASSED         [ 65%]
+tests/unit/test_recommender_mutuals_unit.py::test_mutual_friend_count_zero PASSED             [ 69%]
+tests/unit/test_recommender_mutuals_unit.py::test_mutual_friend_count_no_result PASSED        [ 73%]
+tests/unit/test_recommender_score_unit.py::test_compute_score_math_only PASSED                [ 78%]
+tests/unit/test_recommender_score_unit.py::test_compute_score_zero_cases PASSED               [ 82%]
+tests/unit/test_recommender_top_k_ranking_unit.py::test_recommend_top_k_ranking PASSED        [ 86%]
+tests/unit/test_service_unit.py::test_add_user_with_injected_driver PASSED                    [ 91%]
+tests/unit/test_service_unit.py::test_add_friendship_executes_expected_query PASSED           [ 95%]
+tests/unit/test_service_unit.py::test_list_friends_returns_sorted_list PASSED                 [100%]
 
 ========================= 23 passed in 11.11s =========================
-
-C:\Users\venka\Downloads\Udemy\GitHub\social-graph-py>
 ```
 
 ## 📦 Deployment
